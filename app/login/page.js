@@ -106,11 +106,11 @@ const [hoverBg, setHoverBg] = useState(false);
         
 
           <div className="flex flex-row">
-            <h6 className="text-gray-700 ml-10 mt-5">
+            <h6 className="text-gray-500 ml-10 mt-5">
               Don't have an account?
             </h6>
             <h6
-              className="text-[#ECA49C] underline mt-5 ml-2"
+              className="text-white underline mt-5 ml-2"
               onClick={() => router.replace("/signup")}
             >
               Sign Up!
