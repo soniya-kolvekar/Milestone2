@@ -63,7 +63,12 @@ export default function Page() {
           console.log("Habit saved to profile!");
         } catch (error) {
           console.error("Error saving habit:", error);
+          if (error.code === 'unavailable') {
+            alert("Offline: Your habit analysis has been completed but could not be saved to your profile at this moment.");
+          }
         }
+      } else {
+        alert("Note: You are not logged in. Your habit analysis will not be saved to your profile history.");
       }
     } catch (err) {
       console.error(err);
