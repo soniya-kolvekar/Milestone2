@@ -6,12 +6,25 @@ import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { User } from "lucide-react";
 
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   if (!mounted) return null;
@@ -22,24 +35,35 @@ export default function LandingPage() {
       <div className="absolute inset-0 opacity-30 blur-3xl bg-[radial-gradient(circle_at_20%_20%,#ffffff22,transparent_40%),radial-gradient(circle_at_80%_0%,#ffffff22,transparent_40%)]" />
 
       {/* Navbar */}
-      <nav className="relative z-10 flex items-center justify-between px-8 py-2">
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 transition-all duration-300 ${isScrolled
+            ? "bg-[#3A1C4A]/80 backdrop-blur-md shadow-lg py-3"
+            : "bg-transparent"
+          }`}
+      >
         <Link href="/" className="flex items-center">
           <Image
             src="/logo.jpeg"
             alt="HabitLens Logo"
-            width={140}
+            width={40}
             height={40}
-            className="object-contain"
+            className="object-contain rounded-full"
             priority
           />
+          <span className="ml-3 font-semibold text-lg tracking-tight">HabitLens</span>
         </Link>
-        <div className="space-x-3">
+        <div className="flex items-center space-x-4">
           <Link href="/login">
             <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10 rounded-xl px-4 py-2">Login</Button>
           </Link>
           <Link href="/signup">
             <Button className="bg-white/90 text-purple-800 hover:bg-white rounded-xl shadow-lg px-4 py-2">
               Get Started
+            </Button>
+          </Link>
+          <Link href="/profile">
+            <Button variant="ghost" size="icon" className="text-white/80 hover:text-white hover:bg-white/10 rounded-full">
+              <User className="w-6 h-6" />
             </Button>
           </Link>
         </div>
