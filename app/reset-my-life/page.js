@@ -12,8 +12,7 @@ export default function ResetLifePage() {
     const [loading, setLoading] = useState(true);
     const [habitData, setHabitData] = useState([]);
 
-    // Feature State
-    // Feature State
+
     const [isGenerating, setIsGenerating] = useState(false);
     const [resetPlan, setResetPlan] = useState(null);
 
@@ -36,7 +35,6 @@ export default function ResetLifePage() {
             );
             const snapshot = await getDocs(q);
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            // Take recent 14 days
             setHabitData(data.slice(0, 14));
         } catch (error) {
             console.error("Error fetching habits:", error);
@@ -84,7 +82,6 @@ export default function ResetLifePage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#3A1C4A] to-[#8E5AA8] text-white p-6 md:p-12 relative overflow-hidden">
-            {/* Background Texture */}
             <div className="absolute inset-0 opacity-20 blur-3xl bg-[radial-gradient(circle_at_20%_20%,#ffffff22,transparent_40%),radial-gradient(circle_at_80%_80%,#ffffff22,transparent_40%)] pointer-events-none" />
 
             <div className="relative z-10 max-w-5xl mx-auto">
@@ -133,16 +130,13 @@ export default function ResetLifePage() {
 
                 {resetPlan && (
                     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                        {/* Analysis Summary */}
                         <div className="bg-purple-500/10 border border-purple-500/20 p-6 rounded-2xl">
                             <p className="text-purple-200 text-lg italic leading-relaxed text-center">
                                 "{resetPlan.analysis_summary}"
                             </p>
                         </div>
 
-                        {/* Habits Grid */}
                         <div className="grid md:grid-cols-2 gap-6">
-                            {/* Stop List */}
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
                                 <div className="flex items-center gap-2 text-pink-300 mb-6 border-b border-white/10 pb-3">
                                     <Moon className="w-5 h-5" />
@@ -164,7 +158,6 @@ export default function ResetLifePage() {
                                 </div>
                             </div>
 
-                            {/* Start List */}
                             <div className="bg-white/5 p-6 rounded-2xl border border-white/10">
                                 <div className="flex items-center gap-2 text-emerald-300 mb-6 border-b border-white/10 pb-3">
                                     <Sun className="w-5 h-5" />
@@ -187,7 +180,6 @@ export default function ResetLifePage() {
                             </div>
                         </div>
 
-                        {/* 7-Day Plan */}
                         <div>
                             <div className="flex items-center gap-2 text-blue-300 mb-6 mt-8">
                                 <Calendar className="w-6 h-6" />
@@ -225,8 +217,6 @@ export default function ResetLifePage() {
                             </div>
                         </div>
 
-                        {/* Footer / Save Action */}
-                        {/* Footer / Action */}
                         <div className="flex flex-col items-center gap-4 py-12 border-t border-white/10 mt-12 bg-black/20 rounded-3xl p-8">
                             <p className="text-white/60 text-sm italic max-w-lg text-center">
                                 "{resetPlan.closing_message}"

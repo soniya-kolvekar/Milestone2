@@ -52,10 +52,9 @@ export default function ExplorePage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#3A1C4A] to-[#8E5AA8] text-white p-6 md:p-12 relative overflow-hidden">
-            {/* Background Texture */}
+
             <div className="absolute inset-0 opacity-20 blur-3xl bg-[radial-gradient(circle_at_20%_20%,#ffffff22,transparent_40%),radial-gradient(circle_at_80%_80%,#ffffff22,transparent_40%)] pointer-events-none" />
 
-            {/* Navbar */}
             <nav className="relative z-10 flex items-center mb-16">
                 <Link href="/">
                     <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10 gap-2 pl-0">
@@ -65,7 +64,6 @@ export default function ExplorePage() {
                 </Link>
             </nav>
 
-            {/* Header */}
             <div className="relative z-10 max-w-4xl mx-auto text-center mb-16 space-y-4">
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
@@ -84,7 +82,6 @@ export default function ExplorePage() {
                 </motion.p>
             </div>
 
-            {/* Grid */}
             <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {features.map((feature, index) => {
                     const Icon = feature.icon;

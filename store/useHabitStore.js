@@ -4,12 +4,12 @@ import { db } from '../firebase';
 import { isSameDay, subDays, parseISO } from 'date-fns';
 
 const useHabitStore = create((set, get) => ({
-    dailyEntries: [], // Array of entry objects
+    dailyEntries: [],
     selectedDate: new Date(),
     isModalOpen: false,
     isAnalyzing: false,
 
-    // Current analysis result
+
     currentInsight: null,
     currentScore: 0,
     currentSuggestion: null,
@@ -19,7 +19,7 @@ const useHabitStore = create((set, get) => ({
     currentReflection: null,
     streak: 0,
 
-    // Actions
+
     setDailyEntries: (entries) => set({ dailyEntries: entries }),
     setSelectedDate: (date) => set({ selectedDate: date }),
     setIsModalOpen: (isOpen) => set({ isModalOpen: isOpen }),
@@ -35,7 +35,7 @@ const useHabitStore = create((set, get) => ({
     }),
     setAnalyzing: (isAnalyzing) => set({ isAnalyzing }),
 
-    // Fetch from Firebase
+
     fetchHabits: async (userId) => {
         if (!userId) return;
         try {
@@ -47,7 +47,7 @@ const useHabitStore = create((set, get) => ({
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
             set({ dailyEntries: data });
-            get().calculateStreak(data); // Calculate streak after fetching
+            get().calculateStreak(data);
 
         } catch (error) {
             console.error("Failed to fetch habits:", error);
@@ -60,13 +60,12 @@ const useHabitStore = create((set, get) => ({
             return;
         }
 
-        // Sort descending just in case
+
         const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
         const today = new Date();
         const yesterday = subDays(today, 1);
 
-        // Check if the most recent entry is today or yesterday
-        // If the last entry is older than yesterday, streak is broken -> 0
+
         const lastEntryDate = parseISO(sorted[0].date);
 
         if (!isSameDay(lastEntryDate, today) && !isSameDay(lastEntryDate, yesterday)) {
@@ -75,13 +74,13 @@ const useHabitStore = create((set, get) => ({
         }
 
         let streakCount = 0;
-        let currentDate = lastEntryDate; // Start checking from the most recent valid streak day
+        let currentDate = lastEntryDate;
 
-        // Iterate through entries to find consecutive days
+
         for (let i = 0; i < sorted.length; i++) {
             const entryDate = parseISO(sorted[i].date);
 
-            // If it's the first one we're checking (which we validated above is today or yesterday)
+
             if (i === 0) {
                 streakCount++;
                 continue;
@@ -91,12 +90,12 @@ const useHabitStore = create((set, get) => ({
 
             if (isSameDay(entryDate, expectedPrevDate)) {
                 streakCount++;
-                currentDate = entryDate; // Move back one day
+                currentDate = entryDate;
             } else if (isSameDay(entryDate, currentDate)) {
-                // Multiple entries on same day, ignore
+
                 continue;
             } else {
-                // Gap found
+
                 break;
             }
         }
@@ -107,7 +106,7 @@ const useHabitStore = create((set, get) => ({
     addEntry: (entry) => {
         set((state) => {
             const newEntries = [entry, ...state.dailyEntries];
-            // Re-sort just in case, though usually adds to top
+
             newEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             // Trigger streak calc
@@ -120,7 +119,7 @@ const useHabitStore = create((set, get) => ({
         get().calculateStreak(get().dailyEntries);
     },
 
-    // Reset My Life Feature
+
     isResetModalOpen: false,
     isGeneratingReset: false,
     resetPlan: null,
