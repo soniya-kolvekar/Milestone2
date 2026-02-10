@@ -9,6 +9,9 @@ import {
     orderBy,
     getDocs,
     updateDoc,
+    setDoc,
+    onSnapshot,
+    deleteDoc,
 } from "firebase/firestore";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
@@ -20,74 +23,97 @@ export default function Profile() {
     const [loading, setLoading] = useState(true);
     const [editingName, setEditingName] = useState(false);
     const [newName, setNewName] = useState("");
+    const [error, setError] = useState("");
     const router = useRouter();
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        let unsubscribeUser;
+        let unsubscribeHabits;
+
+        const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
             if (!currentUser) {
                 router.push("/login");
                 return;
             }
             setUser(currentUser);
-            try {
-                await Promise.all([
-                    fetchUserData(currentUser.uid),
-                    fetchHabits(currentUser.uid)
-                ]);
-            } catch (error) {
-                console.error("Error loading profile data:", error);
-            } finally {
+            setError("");
+
+
+            unsubscribeUser = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
+                if (doc.exists()) {
+                    const data = doc.data();
+                    setUserData(data);
+                    setNewName(data.name || currentUser.email?.split("@")[0] || "");
+                } else {
+                    const validName = currentUser.email?.split("@")[0] || "";
+                    setUserData({ name: validName, email: currentUser.email });
+                    setNewName(validName);
+                }
+            }, (err) => {
+                console.error("User listener error:", err);
+                if (err.code !== 'unavailable') {
+                    setError(`Sync Error: ${err.message}`);
+                }
+            });
+
+            // Listener for Habits (Analysis History)
+            unsubscribeHabits = onSnapshot(collection(db, "users", currentUser.uid, "habits"), (snapshot) => {
+                const habitsList = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                })).sort((a, b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
+
+                setHabits(habitsList);
                 setLoading(false);
-            }
+            }, (err) => {
+                console.error("Habits listener error:", err);
+                if (err.code !== 'unavailable') {
+                    setError(`Habits Sync Error: ${err.message}`);
+                }
+            });
         });
-        return () => unsubscribe();
+
+        return () => {
+            unsubscribeAuth();
+            if (unsubscribeUser) unsubscribeUser();
+            if (unsubscribeHabits) unsubscribeHabits();
+        };
     }, [router]);
-
-    const fetchUserData = async (uid) => {
-        try {
-            const userDoc = await getDoc(doc(db, "users", uid));
-            if (userDoc.exists()) {
-                const data = userDoc.data();
-                setUserData(data);
-                setNewName(data.name || user.email?.split("@")[0] || "");
-            } else {
-                // Fallback if doc doesn't exist
-                const validName = user.email?.split("@")[0] || "";
-                setUserData({ name: validName, email: user.email });
-                setNewName(validName);
-            }
-        } catch (error) {
-            console.error("Error fetching user data:", error);
-        }
-    };
-
-    const fetchHabits = async (uid) => {
-        try {
-            const q = query(
-                collection(db, "users", uid, "habits"),
-                orderBy("timestamp", "desc")
-            );
-            const querySnapshot = await getDocs(q);
-            const habitsList = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setHabits(habitsList);
-        } catch (error) {
-            console.error("Error fetching habits:", error);
-        }
-    };
 
     const handleUpdateName = async () => {
         if (!user || !newName.trim()) return;
+        setError("");
+
+
+        const oldName = userData?.name;
+        setUserData(prev => ({ ...prev, name: newName }));
+        setEditingName(false);
+
         try {
-            await updateDoc(doc(db, "users", user.uid), {
+            await setDoc(doc(db, "users", user.uid), {
                 name: newName,
-            });
-            setUserData({ ...userData, name: newName });
-            setEditingName(false);
+                email: user.email,
+            }, { merge: true });
+
+            alert("Name updated successfully!");
         } catch (error) {
             console.error("Error updating name:", error);
+
+            if (error.code !== 'unavailable') {
+                setUserData(prev => ({ ...prev, name: oldName }));
+                setError("Failed to update name. Please try again.");
+            } else {
+                alert("Saved locally! Changes will sync once you are back online.");
+            }
+        }
+    };
+
+    const handleDeleteHabit = async (habitId) => {
+        try {
+            await deleteDoc(doc(db, "users", user.uid, "habits", habitId));
+        } catch (error) {
+            console.error("Error deleting habit:", error);
+            setError("Failed to delete entry. Please try again.");
         }
     };
 
@@ -99,7 +125,7 @@ export default function Profile() {
     if (loading) {
         return (
             <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#3A1C4A] to-[#8E5AA8] text-white">
-                Loading...
+                Loading Profile...
             </div>
         );
     }
@@ -107,7 +133,27 @@ export default function Profile() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#3A1C4A] to-[#8E5AA8] p-8">
             <div className="max-w-4xl mx-auto">
-                {/* Header */}
+
+                {error && (
+                    <div className="mb-6 bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-xl backdrop-blur-sm flex justify-between items-center animate-pulse">
+                        <div className="flex items-center gap-3">
+                            <span>{error}</span>
+                            <button
+                                onClick={() => {
+                                    setError("");
+                                    fetchUserData(user);
+                                    fetchHabits(user.uid);
+                                }}
+                                className="bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg text-xs font-semibold transition"
+                            >
+                                Retry
+                            </button>
+                        </div>
+                        <button onClick={() => setError("")} className="text-white hover:text-red-300">✕</button>
+                    </div>
+                )}
+
+
                 <div className="flex justify-between items-center mb-10 bg-[#3A1C4A]/50 backdrop-blur-md p-6 rounded-2xl shadow-xl border border-white/10">
                     <div className="flex items-center gap-4">
                         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-2xl font-bold text-white shadow-lg">
@@ -158,7 +204,7 @@ export default function Profile() {
                     </button>
                 </div>
 
-                {/* Habits History */}
+
                 <h2 className="text-2xl font-bold text-white mb-6 font-[Marcellus] pl-2 border-l-4 border-[#C9A3D9]">
                     Analysis History
                 </h2>
@@ -178,9 +224,17 @@ export default function Profile() {
                                     <h3 className="text-xl font-semibold text-[#C9A3D9]">
                                         {habit.habit}
                                     </h3>
-                                    <span className="text-xs text-white/40">
-                                        {habit.timestamp?.toDate().toLocaleDateString()}
-                                    </span>
+                                    <div className="flex gap-4 items-center">
+                                        <span className="text-xs text-white/40">
+                                            {habit.timestamp?.toDate().toLocaleDateString()}
+                                        </span>
+                                        <button
+                                            onClick={() => handleDeleteHabit(habit.id)}
+                                            className="text-white/70 hover:text-red-400 transition text-sm bg-white/10 hover:bg-red-500/20 px-4 py-1.5 rounded-lg border border-white/10 hover:border-red-500/50"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                                 <div
                                     className="text-white/80 leading-relaxed text-sm bg-black/20 p-4 rounded-lg"
