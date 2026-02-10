@@ -36,9 +36,9 @@ export default function ExplorePage() {
             title: "Risk Indicator",
             description: "Predict potential burnout or health risks based on your history.",
             icon: AlertTriangle,
-            href: "#",
+            href: "/risk-indicator",
             color: "text-orange-300",
-            active: false
+            active: true
         },
         {
             title: "Habit Replacement",
