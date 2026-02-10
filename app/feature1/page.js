@@ -18,21 +18,6 @@ export default function Page() {
   }, []);
 
 
-  const truncateText = (text, maxSentences = 6) => {
-    if (!text || typeof text !== "string") return text;
-
-    // Convert to a single paragraph by replacing newlines with spaces
-    let refinedText = text.replace(/\s+/g, " ").trim();
-
-    // Split by sentence endings (. ! ?) follow by space or end of string
-    const sentences = refinedText.match(/[^.!?]+[.!?](\s|$)/g);
-
-    if (!sentences) return refinedText;
-
-    const limitedText = sentences.slice(0, Math.min(sentences.length, maxSentences)).join("").trim();
-    return limitedText;
-  };
-
   const analyzeHabit = async () => {
     setLoading(true);
     setResult(null);
@@ -45,11 +30,6 @@ export default function Page() {
       });
 
       const data = await res.json();
-
-      // Truncate the analysis result
-      if (data.result) data.result = truncateText(data.result);
-      if (data.analysis) data.analysis = truncateText(data.analysis);
-
       setResult(data); // data contains result + theme
 
       if (user) {
