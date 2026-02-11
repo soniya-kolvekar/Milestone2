@@ -31,10 +31,9 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#3A1C4A] to-[#8E5AA8] text-white relative overflow-hidden">
-      {/* subtle glow background */}
+      
       <div className="absolute inset-0 opacity-30 blur-3xl bg-[radial-gradient(circle_at_20%_20%,#ffffff22,transparent_40%),radial-gradient(circle_at_80%_0%,#ffffff22,transparent_40%)]" />
 
-      {/* Navbar */}
       <nav
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 transition-all duration-300 ${isScrolled
             ? "bg-[#3A1C4A]/80 backdrop-blur-md shadow-lg py-3"
@@ -69,7 +68,7 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+    
       <section className="relative z-10 flex flex-col items-center text-center px-6 pt-24 pb-20">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -114,7 +113,6 @@ export default function LandingPage() {
           </Link>
         </motion.div>
 
-        {/* glass preview panel */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -143,7 +141,7 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* Features Section */}
+
       <section className="relative z-10 px-8 pb-28 grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {[
           {
@@ -180,7 +178,6 @@ export default function LandingPage() {
         ))}
       </section>
 
-      {/* CTA Section */}
       <section className="relative z-10 text-center pb-24 px-6">
         <h3 className="text-3xl md:text-4xl font-semibold tracking-tight">
           Begin with one small change
@@ -195,7 +192,7 @@ export default function LandingPage() {
         </Link>
       </section>
 
-      {/* Footer */}
+      
       <footer className="relative z-10 border-t border-white/20 text-center py-8 text-purple-200/80 text-sm">
         © {new Date().getFullYear()} HabitScope · Designed for mindful growth
       </footer>

@@ -1,17 +1,16 @@
 
 'use client';
-import { useState } from 'react'; // removed unused useEffect
+import { useState } from 'react'; 
 import { DayPicker } from 'react-day-picker';
 import { format, isSameDay, parseISO } from 'date-fns';
-// removed unused imports: collection, query, where, getDocs, db, auth
+
 import useHabitStore from '../../store/useHabitStore';
 import 'react-day-picker/dist/style.css';
 
 export default function CalendarHistory() {
-    // Use store state instead of local state
+  
     const { dailyEntries, setSelectedDate, setIsModalOpen, setAnalysisResult } = useHabitStore();
 
-    // Highlight days with entries
     const modifiers = {
         hasEntry: (date) => dailyEntries.some(log => isSameDay(parseISO(log.date), date)),
     };
@@ -27,7 +26,6 @@ export default function CalendarHistory() {
     const handleDayClick = (date) => {
         if (!date) return;
 
-        // Prevent selecting future dates
         if (date > new Date()) return;
 
         const log = dailyEntries.find(log => isSameDay(parseISO(log.date), date));
@@ -43,7 +41,7 @@ export default function CalendarHistory() {
                 reflection: log.reflection
             });
         } else {
-            // No data for this date -> Reset current result to null/empty so modal knows
+           
             setAnalysisResult({
                 insight: null,
                 score: null,

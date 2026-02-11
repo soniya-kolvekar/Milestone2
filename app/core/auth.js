@@ -19,7 +19,6 @@ export async function createAccount(email, password) {
       createdAt: new Date(),
     });
 
-    await sendEmailVerification(result.user);
     return result;
 
   } catch (error) {

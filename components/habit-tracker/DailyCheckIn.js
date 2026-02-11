@@ -18,7 +18,7 @@ export default function DailyCheckIn() {
         reflection: ''
     });
 
-    // Check if check-in is already done for today
+   
     const todayStr = new Date().toISOString().split('T')[0];
     const hasCheckedInToday = dailyEntries.some(entry => entry.date === todayStr);
 
@@ -59,7 +59,7 @@ export default function DailyCheckIn() {
         setAnalyzing(true);
 
         try {
-            // 1. Get AI Analysis
+            
             const res = await fetch('/api/habit-advice', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -73,32 +73,31 @@ export default function DailyCheckIn() {
 
             if (aiData.error) throw new Error(aiData.error);
 
-            // 3. Update Store immediately (Optimistic UI)
+        
             console.log("AI Data received:", aiData);
             setAnalysisResult(aiData);
 
             const newEntry = {
                 ...formData,
                 ...aiData,
-                date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-                timestamp: serverTimestamp() // Note: serverTimestamp might be problematic for local store logic if not handled, but strictly speaking checking date string is enough for streak
+                date: new Date().toISOString().split('T')[0], 
+                timestamp: serverTimestamp() 
             };
             addEntry(newEntry);
 
-            // 2. Save to Firebase
+            
             try {
                 const userId = auth.currentUser.uid;
                 await addDoc(collection(db, 'users', userId, 'daily_logs'), {
                     ...formData,
                     ...aiData,
-                    date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+                    date: new Date().toISOString().split('T')[0], 
                     timestamp: serverTimestamp()
                 });
                 console.log("Saved to Firebase successfully");
             } catch (firebaseError) {
                 console.error("Firebase save failed:", firebaseError);
-                // We don't block the UI update if save fails, but maybe alert user?
-                // alert("Note: Result shown but failed to save to history.");
+              
             }
 
         } catch (error) {
@@ -114,7 +113,7 @@ export default function DailyCheckIn() {
             <h2 className="text-2xl font-semibold mb-6 text-white font-sans">Daily Check-in</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Sliders for quant data */}
+              
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm font-medium mb-2 text-white/80">Hours of Sleep ({formData.sleep})</label>
@@ -136,7 +135,7 @@ export default function DailyCheckIn() {
                     </div>
                 </div>
 
-                {/* Mood Selection */}
+             
                 <div>
                     <label className="block text-sm font-medium mb-3 text-white/80">How are you feeling?</label>
                     <div className="flex justify-between gap-2 overflow-x-auto pb-2">
@@ -161,7 +160,6 @@ export default function DailyCheckIn() {
                     </div>
                 </div>
 
-                {/* Reflection */}
                 <div>
                     <label className="block text-sm font-medium mb-2 text-white/80">Emotional Reflection</label>
                     <textarea

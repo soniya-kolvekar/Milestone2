@@ -36,12 +36,9 @@ export async function POST(req) {
             }],
             generationConfig: {
                 temperature: 0.7,
-                maxOutputTokens: 2500, // Increased to prevent truncation
-                // responseMimeType: "application/json" // Removed to avoid potential conflicts
+                maxOutputTokens: 2500, 
             }
         };
-
-        // Fallback Strategy
         const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro-latest"];
         let finalData = null;
         let lastError = null;
@@ -63,11 +60,11 @@ export async function POST(req) {
                     const errorText = await response.text();
                     console.warn(`API: Model ${modelName} failed with status ${response.status}: ${errorText}`);
                     if (response.status === 429) {
-                        // Rate limited
-                        await delay(2000); // Backoff
+                        
+                        await delay(2000); 
                         continue;
                     } else if (response.status === 404) {
-                        // Model not found
+                       
                         continue;
                     }
                     throw new Error(`API Error: ${response.status} ${response.statusText}`);
@@ -83,7 +80,7 @@ export async function POST(req) {
 
                 console.log(`API: Model ${modelName} responded. Parsing JSON...`);
 
-                // Clean markdown if present
+            
                 const jsonStr = text.replace(/```json/g, "").replace(/```/g, "").trim();
                 try {
                     finalData = JSON.parse(jsonStr);
@@ -95,7 +92,7 @@ export async function POST(req) {
 
                 if (finalData.insight && finalData.score !== undefined) {
                     console.log(`API: Success with ${modelName}`);
-                    break; // Success, exit loop
+                    break; 
                 } else {
                     console.warn(`API: Model ${modelName} returned incomplete data:`, finalData);
                     throw new Error("Incomplete data received");

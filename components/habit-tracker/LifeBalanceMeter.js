@@ -8,15 +8,15 @@ export default function LifeBalanceMeter({ score, label = "Life Balance" }) {
         { name: 'Remaining', value: 100 - score },
     ];
 
-    // Determine color and status based on score
-    let statusColor = '#4ade80'; // Green (Thriving) - bright for dark bg
+
+    let statusColor = '#4ade80'; 
     let statusText = 'Thriving';
 
     if (score < 40) {
-        statusColor = '#f87171'; // Red (Needs Care)
+        statusColor = '#f87171'; 
         statusText = 'Needs Care';
     } else if (score < 70) {
-        statusColor = '#fbbf24'; // Amber (Stable)
+        statusColor = '#fbbf24'; 
         statusText = 'Stable';
     }
 
@@ -46,7 +46,6 @@ export default function LifeBalanceMeter({ score, label = "Life Balance" }) {
                     </PieChart>
                 </ResponsiveContainer>
 
-                {/* Center Text */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center pt-8">
                     <span className="text-4xl font-bold text-white">{score}</span>
                     <span className="text-sm font-medium" style={{ color: statusColor }}>{statusText}</span>

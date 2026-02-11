@@ -1,6 +1,6 @@
 "use client";
 
-import { createAccount } from "../core/auth";
+import { createAccount, logout } from "../core/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -24,7 +24,8 @@ export default function SignUp() {
 
     try {
       await createAccount(email, password);
-      router.replace("/login");
+      await logout();
+      window.location.href = `/login?signup=success&email=${encodeURIComponent(email)}`;
     } catch (err) {
       console.error(err);
       if (err.code === 'auth/email-already-in-use') {
