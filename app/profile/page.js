@@ -1,6 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { auth, db } from "../../firebase";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 import {
     doc,
     getDoc,
@@ -56,7 +59,7 @@ export default function Profile() {
                 }
             });
 
-            
+
             unsubscribeHabits = onSnapshot(collection(db, "users", currentUser.uid, "habits"), (snapshot) => {
                 const habitsList = snapshot.docs.map(doc => ({
                     id: doc.id,
@@ -246,6 +249,14 @@ export default function Profile() {
                         ))}
                     </div>
                 )}
+                <nav className="relative mt-4 z-10 flex items-center mb-2">
+                    <Link href="/explore">
+                        <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10 gap-2 pl-0">
+                            <ArrowLeft className="w-5 h-5" />
+                            Back
+                        </Button>
+                    </Link>
+                </nav>
             </div>
         </div>
     );

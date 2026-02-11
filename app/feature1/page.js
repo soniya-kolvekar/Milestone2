@@ -3,7 +3,9 @@ import { useState, useEffect } from "react";
 import { auth, db } from "../../firebase";
 import { doc, collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 export default function Page() {
   const [habit, setHabit] = useState("");
   const [result, setResult] = useState(null);
@@ -17,6 +19,13 @@ export default function Page() {
     return () => unsubscribe();
   }, []);
 
+  const truncateText = (text, maxSentences = 4) => {
+    if (!text || typeof text !== "string") return text;
+    let refinedText = text.replace(/\s+/g, " ").trim();
+    const sentences = refinedText.match(/[^.!?]+[.!?](\s|$)/g);
+    if (!sentences) return refinedText;
+    return sentences.slice(0, Math.min(sentences.length, maxSentences)).join("").trim();
+  };
 
   const analyzeHabit = async () => {
     setLoading(true);
@@ -30,7 +39,12 @@ export default function Page() {
       });
 
       const data = await res.json();
-      setResult(data); 
+
+      if (data.result) data.result = truncateText(data.result);
+      if (data.analysis) data.analysis = truncateText(data.analysis);
+
+      setResult(data);
+
       if (user) {
         try {
           await addDoc(collection(db, "users", user.uid, "habits"), {
@@ -62,6 +76,7 @@ export default function Page() {
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-b from-[#3A1C4A] to-[#8E5AA8] p-4 overflow-y-auto">
       <div className="w-full max-w-4xl py-10 p-8 bg-[#3A1C4A] backdrop-blur-md rounded-3xl shadow-2xl">
+
         <h1
           className="text-4xl font-bold mb-6 mt-10  mt-5 ml-10  text-center"
           style={{ fontFamily: "Marcellus, serif", color: "#9987a3" }}
@@ -100,6 +115,14 @@ export default function Page() {
             {result.result || result.analysis || result}
           </div>
         )}
+        <nav className="relative mt-4 z-10 flex items-center mb-2">
+          <Link href="/explore">
+            <Button variant="ghost" className="text-white/80 hover:text-white hover:bg-white/10 gap-2 pl-0">
+              <ArrowLeft className="w-5 h-5" />
+              Back
+            </Button>
+          </Link>
+        </nav>
       </div>
     </div>
   );
