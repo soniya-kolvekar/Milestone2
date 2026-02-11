@@ -5,7 +5,7 @@ export async function POST(req) {
 
     const requestBody = {
       contents: [{
-        parts: [{ text: `Provide a very detailed, extensive, and comprehensive analysis of the long-term impact of this habit: ${habit}. The response should be lengthy and cover physiological, psychological, and lifestyle effects in great depth. Do not worry about word count, allow the response to be as detailed as possible to explain all consequences.` }]
+        parts: [{ text: `Provide a short, punchy, and concise analysis of the long-term impact of this habit: ${habit}. The response should be brief, high-impact, and limited to a maximum of 5 sentences. Cover the most important physiological and psychological effects quickly.` }]
       }],
       generationConfig: {
         temperature: 0.7,

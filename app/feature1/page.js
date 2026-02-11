@@ -17,6 +17,13 @@ export default function Page() {
     return () => unsubscribe();
   }, []);
 
+  const truncateText = (text, maxSentences = 4) => {
+    if (!text || typeof text !== "string") return text;
+    let refinedText = text.replace(/\s+/g, " ").trim();
+    const sentences = refinedText.match(/[^.!?]+[.!?](\s|$)/g);
+    if (!sentences) return refinedText;
+    return sentences.slice(0, Math.min(sentences.length, maxSentences)).join("").trim();
+  };
 
   const analyzeHabit = async () => {
     setLoading(true);
@@ -30,7 +37,11 @@ export default function Page() {
       });
 
       const data = await res.json();
-      setResult(data); // data contains result + theme
+
+      if (data.result) data.result = truncateText(data.result);
+      if (data.analysis) data.analysis = truncateText(data.analysis);
+
+      setResult(data); 
 
       if (user) {
         try {
