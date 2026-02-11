@@ -108,12 +108,6 @@ const useHabitStore = create((set, get) => ({
             const newEntries = [entry, ...state.dailyEntries];
 
             newEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            // Trigger streak calc
-            // We can't call get().calculateStreak inside set directly cleanly without getting state first or using a separate call.
-            // Correct pattern: Update state, then calculate. 
-            // However, Zustand set returns void. 
-            // We'll trust the fetch refresh for perfect accuracy, but for immediate UI:
             return { dailyEntries: newEntries };
         });
         get().calculateStreak(get().dailyEntries);

@@ -8,7 +8,6 @@ export default function LifeBalanceMeter({ score, label = "Life Balance" }) {
         { name: 'Remaining', value: 100 - score },
     ];
 
-
     let statusColor = '#4ade80'; 
     let statusText = 'Thriving';
 

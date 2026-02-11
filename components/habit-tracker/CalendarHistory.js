@@ -3,7 +3,6 @@
 import { useState } from 'react'; 
 import { DayPicker } from 'react-day-picker';
 import { format, isSameDay, parseISO } from 'date-fns';
-
 import useHabitStore from '../../store/useHabitStore';
 import 'react-day-picker/dist/style.css';
 
@@ -25,7 +24,6 @@ export default function CalendarHistory() {
 
     const handleDayClick = (date) => {
         if (!date) return;
-
         if (date > new Date()) return;
 
         const log = dailyEntries.find(log => isSameDay(parseISO(log.date), date));

@@ -80,7 +80,7 @@ export async function POST(req) {
 
                 console.log(`API: Model ${modelName} responded. Parsing JSON...`);
 
-            
+                
                 const jsonStr = text.replace(/```json/g, "").replace(/```/g, "").trim();
                 try {
                     finalData = JSON.parse(jsonStr);

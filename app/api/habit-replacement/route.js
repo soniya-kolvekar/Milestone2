@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 
-const apiKey = process.env.GEMINI_API_KEY3;
+const apiKey = process.env.GEMINI_API_KEY3 || "AIzaSyB9RQYngQsh7bOAGkqYty9oqWGJwIuciXU";
 const genAI = new GoogleGenerativeAI(apiKey);
 
 export async function POST(req) {
@@ -14,7 +14,8 @@ export async function POST(req) {
                 { status: 400 }
             );
         }
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
         const prompt = `
       You are a habit replacement expert.
@@ -31,12 +32,9 @@ export async function POST(req) {
       }
     `;
 
-        console.log("Generating content for habit:", habit);
         const result = await model.generateContent(prompt);
         const response = await result.response;
         const text = response.text();
-        console.log("Gemini response:", text);
-
 
         const cleanJson = text.replace(/```json|```/g, "").trim();
 
@@ -45,9 +43,6 @@ export async function POST(req) {
         return NextResponse.json(data);
 
     } catch (error) {
-        console.error("Habit Replacement API Error:", error);
-
-
         return NextResponse.json(
             {
                 replacement: "Unable to generate specific advice (AI Error)",

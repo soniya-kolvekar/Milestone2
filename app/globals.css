@@ -10,6 +10,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-tattva-orange: #FF8C00;
+  --color-tattva-teal: #20B2AA;
 }
 
 @media (prefers-color-scheme: dark) {

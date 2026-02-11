@@ -1,10 +1,21 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sparkles, ArrowRight, CheckCircle2, RefreshCcw, Leaf, Layers, Footprints } from "lucide-react";
+
 export default function HabitReplacement() {
     const [habit, setHabit] = useState("");
     const [result, setResult] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            setMousePos({ x: e.clientX, y: e.clientY });
+        };
+        window.addEventListener("mousemove", handleMouseMove);
+        return () => window.removeEventListener("mousemove", handleMouseMove);
+    }, []);
+
     const generateReplacement = async () => {
         if (!habit) return;
         setLoading(true);
@@ -31,8 +42,21 @@ export default function HabitReplacement() {
     };
 
     return (
-        <div className={`min-h-screen bg-gradient-to-br transition-all duration-1000 flex items-center justify-center p-6 ${getBg()}`}>
-            <div className="w-full max-w-2xl bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl text-white">
+        <div className={`min-h-screen bg-gradient-to-br transition-all duration-1000 flex items-center justify-center p-6 ${getBg()} relative overflow-hidden`}>
+            {/* Interactive Background Gradient Orb */}
+            <div
+                className="pointer-events-none fixed inset-0 z-0 opacity-40 transition-opacity duration-1000"
+                style={{
+                    background: `
+                        radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(79, 182, 193, 0.4), transparent 40%)
+                    `
+                }}
+            />
+            {/* Secondary Ambient Orbs */}
+            <div className="pointer-events-none fixed top-[-10%] md:left-[-10%] left-[0%] w-[500px] h-[500px] bg-tattva-orange/20 rounded-full blur-[100px] animate-pulse" />
+            <div className="pointer-events-none fixed bottom-[-10%] md:right-[-10%] right-[0%] w-[600px] h-[600px] bg-tattva-teal/20 rounded-full blur-[120px] animate-pulse delay-1000" />
+
+            <div className="w-full max-w-2xl bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl text-white relative z-10">
 
                 <div className="flex flex-col items-center mb-8 text-center">
                     <h1 className="text-3xl font-black tracking-tighter uppercase mb-1">Habit Transformer</h1>
@@ -55,13 +79,13 @@ export default function HabitReplacement() {
 
                 {result && (
                     <div className="mt-8 space-y-6 animate-in slide-in-from-bottom-4 duration-700">
+
                         <div className="text-center p-4 bg-black/40 rounded-xl border border-white/10">
                             <div className="uppercase tracking-widest text-[10px] text-purple-400 font-bold mb-1">Suggested Replacement</div>
                             <div className="text-xl font-bold text-white">{result.replacement}</div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                             <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                                 <h3 className="text-purple-300 font-bold mb-3 flex items-center gap-2 text-[10px] uppercase tracking-widest">
                                     <Layers size={14} /> Gradual Strategy
@@ -75,7 +99,6 @@ export default function HabitReplacement() {
                                     ))}
                                 </ul>
                             </div>
-
 
                             <div className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:bg-white/10 transition-colors">
                                 <h3 className="text-purple-300 font-bold mb-3 flex items-center gap-2 text-[10px] uppercase tracking-widest">

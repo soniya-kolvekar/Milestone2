@@ -1,11 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ShieldAlert, Activity, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 export default function RiskIndicator() {
   const [activity, setActivity] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
   const analyze = async () => {
     if (!activity) return;
     setLoading(true);
@@ -31,20 +40,33 @@ export default function RiskIndicator() {
     return "from-[#3A1C4A] to-[#8E5AA8]";
   };
   return (
-    <div className={`min-h-screen bg-gradient-to-br transition-all duration-1000 flex items-center justify-center p-6 ${getBg()}`}>
-      <div className="w-full max-w-2xl bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl text-white">
-        
+    <div className={`min-h-screen bg-gradient-to-br transition-all duration-1000 flex items-center justify-center p-6 ${getBg()} relative overflow-hidden`}>
+      {/* Interactive Background Gradient Orb */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-40 transition-opacity duration-1000"
+        style={{
+          background: `
+                  radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(79, 182, 193, 0.4), transparent 40%)
+              `
+        }}
+      />
+      {/* Secondary Ambient Orbs */}
+      <div className="pointer-events-none fixed top-[-10%] md:left-[-10%] left-[0%] w-[500px] h-[500px] bg-tattva-orange/20 rounded-full blur-[100px] animate-pulse" />
+      <div className="pointer-events-none fixed bottom-[-10%] md:right-[-10%] right-[0%] w-[600px] h-[600px] bg-tattva-teal/20 rounded-full blur-[120px] animate-pulse delay-1000" />
+
+      <div className="w-full max-w-2xl bg-white/10 backdrop-blur-2xl rounded-3xl p-8 border border-white/20 shadow-2xl text-white relative z-10">
+
         <div className="flex flex-col items-center mb-8 text-center">
-            <h1 className="text-3xl font-black tracking-tighter uppercase mb-1">Risk Indicator</h1>
-            <p className="text-white/50 text-xs tracking-widest uppercase">Behavioral Impact & Threat Matrix</p>
+          <h1 className="text-3xl font-black tracking-tighter uppercase mb-1">Risk Indicator</h1>
+          <p className="text-white/50 text-xs tracking-widest uppercase">Behavioral Impact & Threat Matrix</p>
         </div>
-        
+
         <textarea
           onChange={(e) => setActivity(e.target.value)}
           placeholder="Describe a habit or scenario (e.g., Smoking 5 cigarettes a day)..."
           className="w-full h-28 p-4 rounded-2xl bg-black/30 border border-white/10 mb-4 outline-none focus:ring-2 focus:ring-purple-400 placeholder:text-white/20 transition-all"
         />
-        <button 
+        <button
           onClick={analyze}
           disabled={loading}
           className="w-full py-4 bg-white text-[#3A1C4A] font-black uppercase tracking-widest rounded-2xl hover:bg-white/90 active:scale-95 transition-all disabled:opacity-50"

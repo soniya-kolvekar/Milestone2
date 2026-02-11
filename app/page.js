@@ -46,7 +46,7 @@ export default function LandingPage() {
             alt="HabitLens Logo"
             width={40}
             height={40}
-            className="object-contain rounded-full"
+            className="object-contain rounded-full "
             priority
           />
           <span className="ml-3 font-semibold text-lg tracking-tight">HabitLens</span>
@@ -140,7 +140,6 @@ export default function LandingPage() {
           </div>
         </motion.div>
       </section>
-
 
       <section className="relative z-10 px-8 pb-28 grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {[
