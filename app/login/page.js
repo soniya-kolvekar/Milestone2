@@ -65,7 +65,7 @@ export default function Login() {
             onClick={async () => {
               try {
                 await login(email, password);
-                router.replace("/feature1");
+                router.replace("/explore");
               } catch (err) {
                 setError("Invalid email or password");
               }
