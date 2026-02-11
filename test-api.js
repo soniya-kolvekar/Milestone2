@@ -1,6 +1,6 @@
 const https = require('https');
 
-const apiKey = GEMINI_API_KEY;
+const apiKey = process.env.GEMINI_API_KEY;
 const model = 'text-bison-001';
 const url = `https://generativelanguage.googleapis.com/v1beta2/models/${model}:generateText?key=${apiKey}`;
 
