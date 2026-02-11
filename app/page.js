@@ -11,6 +11,7 @@ import { User } from "lucide-react";
 export default function LandingPage() {
   const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     setMounted(true);
@@ -23,20 +24,41 @@ export default function LandingPage() {
       }
     };
 
+    const handleMouseMove = (e) => {
+      setMousePos({ x: e.clientX, y: e.clientY });
+    };
+
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   if (!mounted) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#3A1C4A] to-[#8E5AA8] text-white relative overflow-hidden">
+      {/* Interactive Background Gradient Orb */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-40 transition-opacity duration-1000"
+        style={{
+          background: `
+                radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(79, 182, 193, 0.4), transparent 40%)
+            `
+        }}
+      />
+      {/* Secondary Ambient Orbs */}
+      <div className="pointer-events-none fixed top-[-10%] md:left-[-10%] left-[0%] w-[500px] h-[500px] bg-tattva-orange/20 rounded-full blur-[100px] animate-pulse" />
+      <div className="pointer-events-none fixed bottom-[-10%] md:right-[-10%] right-[0%] w-[600px] h-[600px] bg-tattva-teal/20 rounded-full blur-[120px] animate-pulse delay-1000" />
+
       <div className="absolute inset-0 opacity-30 blur-3xl bg-[radial-gradient(circle_at_20%_20%,#ffffff22,transparent_40%),radial-gradient(circle_at_80%_0%,#ffffff22,transparent_40%)]" />
 
       <nav
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 transition-all duration-300 ${isScrolled
-            ? "bg-[#3A1C4A]/80 backdrop-blur-md shadow-lg py-3"
-            : "bg-transparent"
+          ? "bg-[#3A1C4A]/80 backdrop-blur-md shadow-lg py-3"
+          : "bg-transparent"
           }`}
       >
         <Link href="/" className="flex items-center">
