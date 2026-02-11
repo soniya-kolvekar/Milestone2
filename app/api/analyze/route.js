@@ -13,8 +13,7 @@ export async function POST(req) {
       }
     };
 
-    console.log("Habit received:", habit);
-    console.log("API Key present:", !!process.env.GEMINI_API_KEY);
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
@@ -32,7 +31,7 @@ export async function POST(req) {
     }
 
     const data = await response.json();
-    console.log("API response:", JSON.stringify(data, null, 2));
+
 
     const resultText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
 

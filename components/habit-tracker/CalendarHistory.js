@@ -1,15 +1,16 @@
 
 'use client';
-import { useState } from 'react'; 
 import { DayPicker } from 'react-day-picker';
-import { format, isSameDay, parseISO } from 'date-fns';
-import useHabitStore from '../../store/useHabitStore';
+import { isSameDay, parseISO } from 'date-fns';
 import 'react-day-picker/dist/style.css';
 
-export default function CalendarHistory() {
-    const { dailyEntries, setSelectedDate, setIsModalOpen, setAnalysisResult } = useHabitStore();
+export default function CalendarHistory({ dailyEntries, setAnalysisResult, setIsModalOpen, setSelectedDate }) {
+
+    // Safety check for dailyEntries
+    const safeEntries = Array.isArray(dailyEntries) ? dailyEntries : [];
+
     const modifiers = {
-        hasEntry: (date) => dailyEntries.some(log => isSameDay(parseISO(log.date), date)),
+        hasEntry: (date) => safeEntries.some(log => isSameDay(parseISO(log.date), date)),
     };
 
     const modifiersStyles = {
@@ -24,7 +25,7 @@ export default function CalendarHistory() {
         if (!date) return;
         if (date > new Date()) return;
 
-        const log = dailyEntries.find(log => isSameDay(parseISO(log.date), date));
+        const log = safeEntries.find(log => isSameDay(parseISO(log.date), date));
 
         if (log) {
             setAnalysisResult({
