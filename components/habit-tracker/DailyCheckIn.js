@@ -1,14 +1,13 @@
 
 'use client';
 import { useState } from 'react';
-import useHabitStore from '../../store/useHabitStore';
-import { Loader2, Smile, Frown, Meh, Sun, Cloud, CloudRain } from 'lucide-react';
-import { db, auth } from '../../firebase';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { Loader2, Smile, Meh, Sun, Cloud, CloudRain } from 'lucide-react';
+import { auth } from '../../firebase';
 
-export default function DailyCheckIn() {
-    const { setAnalysisResult, setAnalyzing, isAnalyzing, addEntry, dailyEntries } = useHabitStore();
 
+
+export default function DailyCheckIn({ dailyEntries, onEntryAdded, setAnalysisResult }) {
+    const [isAnalyzing, setAnalyzing] = useState(false);
     const [formData, setFormData] = useState({
         sleep: 0,
         screenTime: 0,
@@ -59,7 +58,11 @@ export default function DailyCheckIn() {
         setAnalyzing(true);
 
         try {
+<<<<<<< HEAD
             
+=======
+            // 1. Get AI Advice
+>>>>>>> 51367da6df059a2dfd8dedfb0941319e5cd25776
             const res = await fetch('/api/habit-advice', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -75,16 +78,23 @@ export default function DailyCheckIn() {
 
         
             console.log("AI Data received:", aiData);
-            setAnalysisResult(aiData);
 
-            const newEntry = {
-                ...formData,
-                ...aiData,
-                date: new Date().toISOString().split('T')[0], 
-                timestamp: serverTimestamp() 
-            };
-            addEntry(newEntry);
+            // 2. Save to DB via API
+            const saveRes = await fetch('/api/habits', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: auth.currentUser.uid,
+                    habitData: {
+                        ...formData,
+                        ...aiData,
+                        date: new Date().toISOString().split('T')[0],
+                        // timestamp handled on server
+                    }
+                })
+            });
 
+<<<<<<< HEAD
             
             try {
                 const userId = auth.currentUser.uid;
@@ -98,7 +108,15 @@ export default function DailyCheckIn() {
             } catch (firebaseError) {
                 console.error("Firebase save failed:", firebaseError);
               
+=======
+            if (!saveRes.ok) {
+                throw new Error("Failed to save habit entry");
+>>>>>>> 51367da6df059a2dfd8dedfb0941319e5cd25776
             }
+
+            // 3. Update State
+            setAnalysisResult(aiData);
+            onEntryAdded();
 
         } catch (error) {
             console.error("Check-in failed:", error);
@@ -113,7 +131,11 @@ export default function DailyCheckIn() {
             <h2 className="text-2xl font-semibold mb-6 text-white font-sans">Daily Check-in</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+<<<<<<< HEAD
               
+=======
+
+>>>>>>> 51367da6df059a2dfd8dedfb0941319e5cd25776
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm font-medium mb-2 text-white/80">Hours of Sleep ({formData.sleep})</label>

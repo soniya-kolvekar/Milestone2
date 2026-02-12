@@ -7,7 +7,7 @@ export async function POST(req) {
     try {
         const { habitData, promptContext } = await req.json();
 
-        console.log("Analyzing habit data:", JSON.stringify(habitData));
+
 
         const promptText = `
       You are a compassionate, human-centered wellness companion. 
@@ -36,16 +36,20 @@ export async function POST(req) {
             }],
             generationConfig: {
                 temperature: 0.7,
-                maxOutputTokens: 2500, 
+                maxOutputTokens: 2500,
+
             }
         };
+
+
         const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro-latest"];
         let finalData = null;
         let lastError = null;
 
         for (const modelName of models) {
             try {
-                console.log(`API: Trying model ${modelName}...`);
+                // console.log(`API: Trying model ${modelName}...`);
+
 
                 const response = await fetch(
                     `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${process.env.GEMINI_API_KEY2}`,
@@ -60,8 +64,7 @@ export async function POST(req) {
                     const errorText = await response.text();
                     console.warn(`API: Model ${modelName} failed with status ${response.status}: ${errorText}`);
                     if (response.status === 429) {
-                        
-                        await delay(2000); 
+                        await delay(2000);
                         continue;
                     } else if (response.status === 404) {
                        
@@ -78,9 +81,7 @@ export async function POST(req) {
                     throw new Error("No text content in response");
                 }
 
-                console.log(`API: Model ${modelName} responded. Parsing JSON...`);
-
-                
+                // console.log(`API: Model ${modelName} responded. Parsing JSON...`);
                 const jsonStr = text.replace(/```json/g, "").replace(/```/g, "").trim();
                 try {
                     finalData = JSON.parse(jsonStr);
@@ -91,8 +92,8 @@ export async function POST(req) {
                 }
 
                 if (finalData.insight && finalData.score !== undefined) {
-                    console.log(`API: Success with ${modelName}`);
-                    break; 
+                    // console.log(`API: Success with ${modelName}`);
+                    break;
                 } else {
                     console.warn(`API: Model ${modelName} returned incomplete data:`, finalData);
                     throw new Error("Incomplete data received");
