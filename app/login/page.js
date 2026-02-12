@@ -1,15 +1,37 @@
 "use client";
 
 import { login, createAccount, resetEmail, logout } from "../core/auth";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
 
 export default function Login() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#3A1C4A] flex items-center justify-center text-white">Loading...</div>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const signupStatus = searchParams.get("signup");
+    const emailParam = searchParams.get("email");
+
+    if (signupStatus === "success") {
+      setSuccess("Account created successfully! Please log in.");
+    }
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+  }, [searchParams]);
 
   const handleLogout = async () => {
     try {
@@ -40,6 +62,9 @@ export default function Login() {
         <div className="w-full max-w-md flex flex-col items-center">
           <h6 className="text-white/70 mb-8">Enter your credentials</h6>
 
+          {success && (
+            <p className="text-green-400 mb-4 font-semibold text-center">{success}</p>
+          )}
           {error && (
             <p className="text-red-400 mb-4 font-semibold text-center">{error}</p>
           )}
@@ -49,6 +74,7 @@ export default function Login() {
               className="w-full h-13 bg-white/10 border border-white/20 text-white placeholder:text-white/50 rounded-xl px-7 focus:outline-none focus:border-purple-400 backdrop-blur-sm"
               type="email"
               placeholder="Email*"
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
 
@@ -56,6 +82,7 @@ export default function Login() {
               className="w-full h-13 bg-white/10 border border-white/20 text-white placeholder:text-white/50 rounded-xl px-7 focus:outline-none focus:border-purple-400 backdrop-blur-sm"
               type="password"
               placeholder="Password*"
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>

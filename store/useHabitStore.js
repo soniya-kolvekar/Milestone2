@@ -121,6 +121,21 @@ const useHabitStore = create((set, get) => ({
     setResetModalOpen: (isOpen) => set({ isResetModalOpen: isOpen }),
     setGeneratingReset: (isGenerating) => set({ isGeneratingReset: isGenerating }),
     setResetPlan: (plan) => set({ resetPlan: plan }),
+
+    fetchActiveResetPlan: async (userId) => {
+        if (!userId) return null;
+        try {
+            const res = await fetch(`/api/reset-plan-history?userId=${userId}`);
+            if (res.ok) {
+                const data = await res.json();
+                set({ resetPlan: data });
+                return data;
+            }
+        } catch (error) {
+            console.error("Failed to fetch active reset plan:", error);
+        }
+        return null;
+    },
 }));
 
 export default useHabitStore;

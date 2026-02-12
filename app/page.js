@@ -40,7 +40,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#3A1C4A] to-[#8E5AA8] text-white relative overflow-hidden">
-      {/* Interactive Background Gradient Orb */}
       <div
         className="pointer-events-none fixed inset-0 z-0 opacity-40 transition-opacity duration-1000"
         style={{

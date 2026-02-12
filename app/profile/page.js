@@ -24,6 +24,7 @@ export default function Profile() {
     const [userData, setUserData] = useState(null);
     const [habits, setHabits] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [habitsLoading, setHabitsLoading] = useState(true);
     const [editingName, setEditingName] = useState(false);
     const [newName, setNewName] = useState("");
     const [error, setError] = useState("");
@@ -41,6 +42,8 @@ export default function Profile() {
             setUser(currentUser);
             setError("");
 
+
+            setLoading(false);
 
             unsubscribeUser = onSnapshot(doc(db, "users", currentUser.uid), (doc) => {
                 if (doc.exists()) {
@@ -67,9 +70,10 @@ export default function Profile() {
                 })).sort((a, b) => (b.timestamp?.toDate() || 0) - (a.timestamp?.toDate() || 0));
 
                 setHabits(habitsList);
-                setLoading(false);
+                setHabitsLoading(false);
             }, (err) => {
                 console.error("Habits listener error:", err);
+                setHabitsLoading(false);
                 if (err.code !== 'unavailable') {
                     setError(`Habits Sync Error: ${err.message}`);
                 }
@@ -212,7 +216,12 @@ export default function Profile() {
                     Analysis History
                 </h2>
 
-                {habits.length === 0 ? (
+                {habitsLoading ? (
+                    <div className="flex flex-col items-center justify-center py-20 bg-[#3A1C4A]/30 rounded-xl gap-4">
+                        <div className="w-10 h-10 border-4 border-[#C9A3D9] border-t-transparent rounded-full animate-spin"></div>
+                        <p className="text-white/60 animate-pulse font-[Marcellus]">Loading your history...</p>
+                    </div>
+                ) : habits.length === 0 ? (
                     <div className="text-white/70 text-center py-10 bg-[#3A1C4A]/30 rounded-xl">
                         No habits analyzed yet. <a href="/feature1" className="text-[#C9A3D9] hover:underline">Start analyzing!</a>
                     </div>
