@@ -115,7 +115,6 @@ export default function ResetModal() {
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
                     className="bg-[#1a1625] border border-white/10 w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col"
                 >
-
                     <div className="p-6 border-b border-white/10 flex justify-between items-center bg-white/5">
                         <div>
                             <h2 className="text-2xl font-bold text-white bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent">
@@ -130,6 +129,7 @@ export default function ResetModal() {
                             <X className="w-5 h-5" />
                         </button>
                     </div>
+
 
                     <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">
                         {isGeneratingReset || isInitializing ? (
@@ -151,6 +151,7 @@ export default function ResetModal() {
                             </div>
                         ) : resetPlan ? (
                             <div className="space-y-8 animate-in fade-in duration-500">
+
 
                                 <div className="bg-purple-500/10 border border-purple-500/20 p-6 rounded-2xl">
                                     <p className="text-purple-200 text-lg italic leading-relaxed">
@@ -179,7 +180,6 @@ export default function ResetModal() {
                                         ))}
                                     </div>
 
-
                                     <div className="space-y-4">
                                         <div className="flex items-center gap-2 text-emerald-300 mb-2">
                                             <Sun className="w-5 h-5" />
@@ -199,7 +199,6 @@ export default function ResetModal() {
                                         ))}
                                     </div>
                                 </div>
-
 
                                 <div>
                                     <div className="flex items-center gap-2 text-blue-300 mb-4">
@@ -252,6 +251,7 @@ export default function ResetModal() {
                             </div>
                         )}
                     </div>
+
 
                     {resetPlan && (
                         <div className="p-6 border-t border-white/10 bg-white/5 flex flex-col md:flex-row justify-between items-center gap-4">

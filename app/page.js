@@ -40,6 +40,9 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#3A1C4A] to-[#8E5AA8] text-white relative overflow-hidden">
+<<<<<<< HEAD
+      
+=======
       {/* Interactive Background Gradient Orb */}
       <div
         className="pointer-events-none fixed inset-0 z-0 opacity-40 transition-opacity duration-1000"
@@ -53,6 +56,7 @@ export default function LandingPage() {
       <div className="pointer-events-none fixed top-[-10%] md:left-[-10%] left-[0%] w-[500px] h-[500px] bg-tattva-orange/20 rounded-full blur-[100px] animate-pulse" />
       <div className="pointer-events-none fixed bottom-[-10%] md:right-[-10%] right-[0%] w-[600px] h-[600px] bg-tattva-teal/20 rounded-full blur-[120px] animate-pulse delay-1000" />
 
+>>>>>>> 51367da6df059a2dfd8dedfb0941319e5cd25776
       <div className="absolute inset-0 opacity-30 blur-3xl bg-[radial-gradient(circle_at_20%_20%,#ffffff22,transparent_40%),radial-gradient(circle_at_80%_0%,#ffffff22,transparent_40%)]" />
 
       <nav
@@ -88,6 +92,8 @@ export default function LandingPage() {
           </Link>
         </div>
       </nav>
+
+    
       <section className="relative z-10 flex flex-col items-center text-center px-6 pt-24 pb-20">
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
@@ -210,6 +216,7 @@ export default function LandingPage() {
         </Link>
       </section>
 
+      
       <footer className="relative z-10 border-t border-white/20 text-center py-8 text-purple-200/80 text-sm">
         © {new Date().getFullYear()} HabitScope · Designed for mindful growth
       </footer>

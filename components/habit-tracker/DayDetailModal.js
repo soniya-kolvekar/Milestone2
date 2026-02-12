@@ -9,6 +9,7 @@ export default function DayDetailModal({ isOpen, onClose, data }) {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm transition-opacity">
             <div className="bg-white dark:bg-zinc-900 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden border border-gray-100 dark:border-zinc-800 animate-in fade-in zoom-in duration-300">
 
+             
                 <div className="p-6 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 relative">
                     <button
                         onClick={onClose}
@@ -23,6 +24,7 @@ export default function DayDetailModal({ isOpen, onClose, data }) {
                     </div>
                 </div>
 
+              
                 <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
 
                     {!data.score ? (
@@ -39,7 +41,7 @@ export default function DayDetailModal({ isOpen, onClose, data }) {
                         </div>
                     ) : (
                         <>
-
+                            
                             <div className="space-y-2">
                                 <h3 className="text-sm uppercase tracking-wider font-semibold text-gray-500">Daily Insight</h3>
                                 <p className="text-gray-800 dark:text-gray-200 leading-relaxed font-light text-lg">
@@ -52,6 +54,7 @@ export default function DayDetailModal({ isOpen, onClose, data }) {
                                 <p className="text-indigo-900 dark:text-indigo-200">{data.suggestion}</p>
                             </div>
 
+                     
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-gray-50 dark:bg-zinc-800/50 p-4 rounded-2xl">
                                     <span className="block text-xs text-gray-500 mb-1">Mood</span>
